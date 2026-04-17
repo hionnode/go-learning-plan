@@ -1,0 +1,66 @@
+{{define "content"}}
+{{$d := .Body}}
+<h1>learning dashboard</h1>
+<p class="tagline">mastery-based, spaced-retrieval curriculum for Go + distributed systems. {{$d.TotalTasks}} tasks.</p>
+
+<div class="grid grid-4">
+  <div class="card stat-block">
+    <span class="value">{{$d.MasteredPct}}%</span>
+    <span class="label">mastered (proficient+)</span>
+    <div class="bar"><div style="width: {{$d.MasteredPct}}%;"></div></div>
+  </div>
+  <div class="card stat-block">
+    <span class="value">{{$d.AutomaticPct}}%</span>
+    <span class="label">automatic</span>
+    <div class="bar"><div style="width: {{$d.AutomaticPct}}%; background: var(--automatic);"></div></div>
+  </div>
+  <div class="card stat-block">
+    <span class="value">{{$d.LearningPct}}%</span>
+    <span class="label">in progress</span>
+    <div class="bar"><div style="width: {{$d.LearningPct}}%; background: var(--learning);"></div></div>
+  </div>
+  <div class="card stat-block">
+    <span class="value">{{$d.DueCount}}</span>
+    <span class="label">due for review today</span>
+    {{if gt $d.DueCount 0}}<a href="/review" class="muted">→ open review queue</a>{{else}}<span class="muted">queue is clear</span>{{end}}
+  </div>
+</div>
+
+{{if $d.Focus}}
+<h2>current focus</h2>
+<div class="card">
+  <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px;">
+    <div>
+      <div style="font-size: 11px; letter-spacing: 1.5px; color: var(--muted); text-transform: uppercase;">phase {{$d.Focus.Phase}} · {{$d.Focus.ID}}</div>
+      <div style="font-size: 18px; margin: 4px 0 8px;">{{$d.Focus.Title}}</div>
+    </div>
+    <span class="pill {{if $d.FocusState}}{{masteryLabel $d.FocusState.Mastery}}{{else}}unseen{{end}}">{{if $d.FocusState}}{{masteryLabel $d.FocusState.Mastery}}{{else}}unseen{{end}}</span>
+  </div>
+  <pre class="log">{{$d.Focus.MasteryCriteria}}</pre>
+  <div style="margin-top: 10px;">
+    <a href="/task/{{$d.Focus.ID}}"><button class="primary">open task →</button></a>
+    <span class="muted" style="margin-left: 12px;">to verify: <span class="mono">go run ./cmd/tracker verify {{$d.Focus.ID}}</span></span>
+  </div>
+</div>
+{{end}}
+
+<h2>curriculum by phase</h2>
+{{range $d.Phases}}
+<div class="phase-header">
+  <span class="badge">PHASE {{.Number}}</span>
+  <span class="muted">{{len .Tasks}} tasks · {{.PercentDone}}% mastered</span>
+</div>
+<div class="card">
+  {{range .Tasks}}
+  <div class="task-row {{if not .Ready}}blocked{{end}}">
+    <a href="/task/{{.ID}}" style="display: grid; grid-template-columns: 220px 1fr; gap: 12px; flex: 1; align-items: baseline;">
+      <span class="id mono">{{.ID}}</span>
+      <span class="title">{{.Title}}</span>
+    </a>
+    <span class="muted" style="font-size: 12px;">{{if .NextDue}}{{relTime .NextDue}}{{else}}—{{end}}</span>
+    <span class="pill {{masteryLabel .Mastery}}">{{masteryLabel .Mastery}}</span>
+  </div>
+  {{end}}
+</div>
+{{end}}
+{{end}}

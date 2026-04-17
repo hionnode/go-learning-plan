@@ -1,0 +1,112 @@
+{{define "content"}}
+{{$d := .Body}}
+<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 16px;">
+  <div>
+    <div class="muted mono" style="font-size: 12px;">phase {{$d.Task.Phase}} · {{$d.Task.ID}}</div>
+    <h1 style="margin-top: 4px;">{{$d.Task.Title}}</h1>
+  </div>
+  <span class="pill {{masteryLabel $d.State.Mastery}}" style="font-size: 12px; padding: 4px 12px;">{{masteryLabel $d.State.Mastery}}</span>
+</div>
+
+{{if not $d.Ready}}
+<div class="card" style="border-color: var(--danger); margin-top: 16px;">
+  <strong>blocked.</strong> <span class="muted">prereqs not yet learning:</span>
+  <ul class="mono">
+    {{range $d.Task.Prereqs}}<li><a href="/task/{{.}}">{{.}}</a></li>{{end}}
+  </ul>
+</div>
+{{end}}
+
+<div class="grid grid-3" style="margin-top: 20px;">
+  <div class="card">
+    <h3 style="margin-top: 0;">mastery criteria</h3>
+    <pre class="log">{{$d.Task.MasteryCriteria}}</pre>
+  </div>
+  <div class="card">
+    <h3 style="margin-top: 0;">prereqs &amp; interleave</h3>
+    <p><span class="muted">requires:</span> {{if $d.Task.Prereqs}}{{range $d.Task.Prereqs}}<a href="/task/{{.}}" class="mono">{{.}}</a> {{end}}{{else}}<span class="muted">—</span>{{end}}</p>
+    <p><span class="muted">interleave with:</span> {{if $d.Task.InterleaveWith}}{{range $d.Task.InterleaveWith}}<a href="/task/{{.}}" class="mono">{{.}}</a> {{end}}{{else}}<span class="muted">—</span>{{end}}</p>
+    <p><span class="muted">remediation:</span> {{if $d.Task.Remediation}}{{range $d.Task.Remediation}}<a href="/task/{{.}}" class="mono">{{.}}</a> {{end}}{{else}}<span class="muted">—</span>{{end}}</p>
+    {{if $d.Task.LgwtChapters}}<p><span class="muted">LGwT chapters:</span> <span class="mono">{{joinCSV $d.Task.LgwtChapters}}</span></p>{{end}}
+  </div>
+  <div class="card">
+    <h3 style="margin-top: 0;">SRS state</h3>
+    <p><span class="muted">last verified:</span> <span class="mono">{{fmtTime $d.State.LastVerifiedAt}}</span></p>
+    <p><span class="muted">next review:</span> <span class="mono">{{fmtTime $d.State.NextReviewAt}}</span> {{if $d.State.NextReviewAt}}<span class="muted">({{relTime $d.State.NextReviewAt}})</span>{{end}}</p>
+    <p><span class="muted">review box:</span> <span class="mono">{{$d.State.ReviewBox}} / {{len $d.Task.ReviewIntervalsDays}}</span></p>
+    <p><span class="muted">intervals:</span> <span class="mono">{{range $d.Task.ReviewIntervalsDays}}{{.}}d {{end}}</span></p>
+  </div>
+</div>
+
+{{if $d.AllDrills}}
+<h2>drills for automaticity</h2>
+<div class="card">
+  {{range $d.AllDrills}}
+  <div class="task-row">
+    <a href="/drill/{{.ID}}" style="display: grid; grid-template-columns: 220px 1fr; gap: 12px; flex: 1; align-items: baseline;">
+      <span class="id mono">{{.ID}}</span>
+      <span class="title">{{.Prompt}}</span>
+    </a>
+    <span class="muted mono" style="font-size: 12px;">target {{.TargetSeconds}}s</span>
+    <a href="/drill/{{.ID}}"><button>run →</button></a>
+  </div>
+  {{end}}
+</div>
+{{end}}
+
+<h2>verify</h2>
+<div class="card">
+  <p class="muted">verify runs <span class="mono">go test ./exercises/phase-{{slice $d.Task.ID 0 1}}/{{$d.Task.ID}}/...</span> and updates mastery.</p>
+  <p>from the repo root:</p>
+  <pre class="log">go run ./cmd/tracker verify {{$d.Task.ID}}</pre>
+</div>
+
+<h2>reflection log</h2>
+<div class="card">
+  <p class="muted">write this <em>after</em> the retrieval attempt, not before. the structured prompts matter — vague notes decay.</p>
+  <form method="post" action="/task/{{$d.Task.ID}}">
+    <div style="margin-bottom: 10px;">
+      <label class="muted">what you built</label>
+      <textarea name="built" rows="2" placeholder="one or two sentences"></textarea>
+    </div>
+    <div style="margin-bottom: 10px;">
+      <label class="muted">what clicked</label>
+      <textarea name="clicked" rows="2" placeholder="the concept that moved from fuzzy to clear"></textarea>
+    </div>
+    <div style="margin-bottom: 10px;">
+      <label class="muted">what's still fuzzy</label>
+      <textarea name="fuzzy" rows="2" placeholder="the thing you'd flunk if quizzed cold tomorrow"></textarea>
+    </div>
+    <button type="submit" class="primary">log reflection</button>
+  </form>
+</div>
+
+{{if $d.State.Reflections}}
+<div style="margin-top: 16px;">
+  {{range $d.State.Reflections}}
+  <div class="card" style="margin-bottom: 8px;">
+    <div class="muted mono" style="font-size: 11px;">{{fmtTime (timePtr .At)}}</div>
+    {{if .Built}}<p><span class="muted">built:</span> {{.Built}}</p>{{end}}
+    {{if .Clicked}}<p><span class="muted">clicked:</span> {{.Clicked}}</p>{{end}}
+    {{if .Fuzzy}}<p><span class="muted">fuzzy:</span> {{.Fuzzy}}</p>{{end}}
+  </div>
+  {{end}}
+</div>
+{{end}}
+
+{{if $d.State.Attempts}}
+<h2>attempt history</h2>
+<table>
+  <thead><tr><th>at</th><th>result</th><th>duration</th></tr></thead>
+  <tbody>
+  {{range $d.State.Attempts}}
+  <tr>
+    <td class="mono">{{fmtTime (timePtr .At)}}</td>
+    <td>{{if .Passed}}<span class="pill proficient">passed</span>{{else}}<span class="pill" style="background: var(--danger);">failed</span>{{end}}</td>
+    <td class="mono">{{.DurationMs}}ms</td>
+  </tr>
+  {{end}}
+  </tbody>
+</table>
+{{end}}
+{{end}}

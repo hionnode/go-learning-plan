@@ -1,0 +1,11 @@
+# Tracker user state — local, regenerated on first run.
+progress.json
+
+# Build artifacts
+/tracker
+
+# Editor noise
+.vscode/
+.idea/
+*.swp
+.DS_Store

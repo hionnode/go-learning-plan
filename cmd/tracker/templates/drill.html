@@ -1,0 +1,33 @@
+{{define "content"}}
+{{$d := .Body}}
+<h1>drills — deliberate practice</h1>
+<p class="tagline">short, timed, repeated. the mastery move is "automatic": do the drill below target time and your parent task promotes from proficient to automatic.</p>
+
+<div class="card">
+  <table>
+    <thead>
+      <tr>
+        <th>drill</th>
+        <th>prompt</th>
+        <th>target</th>
+        <th>best</th>
+        <th>attempts</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {{range $d.Drills}}
+      {{$rec := index $d.Records .ID}}
+      <tr>
+        <td class="mono">{{.ID}}</td>
+        <td class="muted" style="font-size: 12px;">{{.Prompt}}</td>
+        <td class="mono">{{.TargetSeconds}}s</td>
+        <td class="mono">{{if $rec}}{{msToSec $rec.BestMs}}{{else}}—{{end}}</td>
+        <td class="mono">{{if $rec}}{{len $rec.History}}{{else}}0{{end}}</td>
+        <td><a href="/drill/{{.ID}}"><button>run →</button></a></td>
+      </tr>
+      {{end}}
+    </tbody>
+  </table>
+</div>
+{{end}}

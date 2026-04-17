@@ -1,0 +1,47 @@
+{{define "content"}}
+{{$d := .Body}}
+<h1>review queue</h1>
+<p class="tagline">spaced retrieval is the engine. every review is a <em>retrieval</em> — write it from scratch, don't re-read your old solution.</p>
+
+{{if not $d.Items}}
+<div class="card">
+  <p class="muted">nothing is due. come back tomorrow.</p>
+</div>
+{{else}}
+<div class="card">
+  <table>
+    <thead>
+      <tr>
+        <th>task</th>
+        <th>mastery</th>
+        <th>due</th>
+        <th>overdue by</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {{range $d.Items}}
+      <tr>
+        <td>
+          <a href="/task/{{.ID}}">
+            <div class="mono muted" style="font-size: 11px;">{{.ID}}</div>
+            <div>{{.Title}}</div>
+          </a>
+        </td>
+        <td><span class="pill {{masteryLabel .Mastery}}">{{masteryLabel .Mastery}}</span></td>
+        <td class="mono muted" style="font-size: 12px;">{{fmtTime .Due}}</td>
+        <td class="mono" style="font-size: 12px; color: var(--danger);">{{humanDuration .Late}}</td>
+        <td><a href="/task/{{.ID}}"><button>retrieve →</button></a></td>
+      </tr>
+      {{end}}
+    </tbody>
+  </table>
+</div>
+
+<div class="card" style="margin-top: 12px;">
+  <p class="muted">CLI equivalent:</p>
+  <pre class="log">go run ./cmd/tracker review        # list
+go run ./cmd/tracker verify &lt;id&gt;   # retrieve</pre>
+</div>
+{{end}}
+{{end}}

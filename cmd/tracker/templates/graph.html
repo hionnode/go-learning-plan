@@ -1,0 +1,17 @@
+{{define "content"}}
+{{$d := .Body}}
+<h1>prereq graph</h1>
+<p class="tagline">knowledge-graph scaffolding: every task's prereqs must be <span class="pill learning">learning</span> before it unlocks. click a node to open the task.</p>
+
+<div class="card" style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
+  <span class="pill unseen">unseen</span>
+  <span class="pill learning">learning</span>
+  <span class="pill proficient">proficient</span>
+  <span class="pill automatic">automatic</span>
+  <span class="muted" style="margin-left: auto;">arrows run from prereq → dependent. phases are columns.</span>
+</div>
+
+<div class="card" style="margin-top: 12px; overflow-x: auto;">
+  {{$d.SVG}}
+</div>
+{{end}}

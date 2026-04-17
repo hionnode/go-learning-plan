@@ -1,0 +1,73 @@
+{{define "content"}}
+{{$d := .Body}}
+<div class="muted mono" style="font-size: 12px;">drill</div>
+<h1>{{$d.Drill.ID}}</h1>
+<p class="tagline">target <span class="mono">{{$d.Drill.TargetSeconds}}s</span></p>
+
+<div class="card">
+  <h3 style="margin-top: 0;">prompt</h3>
+  <pre class="log">{{$d.Drill.Prompt}}</pre>
+</div>
+
+<div class="card" style="margin-top: 12px;">
+  <h3 style="margin-top: 0;">run</h3>
+  <p class="muted">press start, solve the drill, press stop. the timer runs client-side; the result is posted when you stop.</p>
+  <div style="display: flex; gap: 12px; align-items: center;">
+    <button id="startBtn" class="primary">start</button>
+    <button id="stopBtn" disabled>stop</button>
+    <span class="mono" id="timer" style="font-size: 32px; font-variant-numeric: tabular-nums;">0.0</span>
+    <span class="muted">seconds</span>
+  </div>
+  <form id="resultForm" method="post" action="/drill/{{$d.Drill.ID}}" style="display: none;">
+    <input type="hidden" name="elapsedMs" id="elapsedMs">
+  </form>
+  {{if $d.Message}}<p style="color: var(--accent); margin-top: 14px;">{{$d.Message}}</p>{{end}}
+</div>
+
+{{if $d.Record}}
+<h2>history</h2>
+<div class="card">
+  <p><span class="muted">best:</span> <span class="mono">{{msToSec $d.Record.BestMs}}</span> · <span class="muted">attempts:</span> <span class="mono">{{len $d.Record.History}}</span></p>
+  <table style="margin-top: 8px;">
+    <thead><tr><th>at</th><th>elapsed</th><th>target?</th></tr></thead>
+    <tbody>
+    {{range $d.Record.History}}
+    <tr>
+      <td class="mono">{{fmtTime (timePtr .At)}}</td>
+      <td class="mono">{{msToSec .DurationMs}}</td>
+      <td>{{if .MetTarget}}<span class="pill proficient">met</span>{{else}}<span class="pill" style="background: var(--danger);">over</span>{{end}}</td>
+    </tr>
+    {{end}}
+    </tbody>
+  </table>
+</div>
+{{end}}
+
+<script>
+(function() {
+  const start = document.getElementById('startBtn');
+  const stop  = document.getElementById('stopBtn');
+  const timer = document.getElementById('timer');
+  const form  = document.getElementById('resultForm');
+  const elapsedInput = document.getElementById('elapsedMs');
+  let t0 = 0, raf = 0;
+  function tick() {
+    const e = (performance.now() - t0) / 1000;
+    timer.textContent = e.toFixed(1);
+    raf = requestAnimationFrame(tick);
+  }
+  start.addEventListener('click', () => {
+    t0 = performance.now();
+    start.disabled = true;
+    stop.disabled  = false;
+    tick();
+  });
+  stop.addEventListener('click', () => {
+    cancelAnimationFrame(raf);
+    const ms = Math.round(performance.now() - t0);
+    elapsedInput.value = ms;
+    form.submit();
+  });
+})();
+</script>
+{{end}}

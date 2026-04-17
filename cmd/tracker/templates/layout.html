@@ -1,0 +1,201 @@
+{{define "layout"}}<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{.Title}} · learning-plan</title>
+  <style>
+    :root {
+      --bg: #0f1115;
+      --card: #1a1d23;
+      --card-hover: #222630;
+      --text: #f5f5f7;
+      --muted: #8c909a;
+      --border: #2a2e38;
+      --unseen: #3a3f4b;
+      --learning: #d4a017;
+      --proficient: #4a9a6e;
+      --automatic: #2d6cdf;
+      --danger: #c75450;
+      --accent: #d4a017;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); }
+    body {
+      font: 14px/1.55 ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      min-height: 100vh;
+    }
+    a { color: var(--text); text-decoration: none; }
+    a:hover { color: var(--accent); }
+
+    header.topnav {
+      border-bottom: 1px solid var(--border);
+      background: var(--card);
+      padding: 14px 32px;
+      display: flex;
+      align-items: baseline;
+      gap: 24px;
+    }
+    header.topnav .brand {
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: var(--text);
+    }
+    header.topnav .brand small {
+      color: var(--muted);
+      font-weight: 400;
+      margin-left: 8px;
+    }
+    header.topnav nav { display: flex; gap: 20px; flex: 1; }
+    header.topnav nav a {
+      color: var(--muted);
+      padding-bottom: 4px;
+      border-bottom: 2px solid transparent;
+    }
+    header.topnav nav a.active {
+      color: var(--text);
+      border-bottom-color: var(--accent);
+    }
+    header.topnav .right {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    main { padding: 32px; max-width: 1400px; margin: 0 auto; }
+
+    h1 { font-size: 22px; margin: 0 0 6px 0; letter-spacing: -0.2px; }
+    h2 { font-size: 15px; margin: 28px 0 10px 0; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); font-weight: 600; }
+    h3 { font-size: 14px; margin: 16px 0 8px 0; }
+    .tagline { color: var(--muted); margin-bottom: 24px; font-size: 13px; }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 18px;
+    }
+    .card + .card { margin-top: 12px; }
+
+    .grid { display: grid; gap: 12px; }
+    .grid-3 { grid-template-columns: repeat(3, 1fr); }
+    .grid-4 { grid-template-columns: repeat(4, 1fr); }
+    .grid-5 { grid-template-columns: repeat(5, 1fr); }
+
+    .pill {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: #fff;
+    }
+    .pill.unseen { background: var(--unseen); }
+    .pill.learning { background: var(--learning); color: #2a1f00; }
+    .pill.proficient { background: var(--proficient); }
+    .pill.automatic { background: var(--automatic); }
+
+    .bar {
+      height: 4px;
+      background: var(--unseen);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+    .bar > div { height: 100%; background: var(--proficient); }
+
+    .task-row {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 12px;
+      align-items: center;
+      padding: 8px 12px;
+      border-radius: 6px;
+      margin: 2px 0;
+    }
+    .task-row:hover { background: var(--card-hover); }
+    .task-row .id { color: var(--muted); font-size: 12px; }
+    .task-row .title { color: var(--text); }
+    .task-row.blocked { opacity: 0.5; }
+
+    .stat-block { display: flex; flex-direction: column; gap: 4px; }
+    .stat-block .value { font-size: 28px; font-weight: 700; color: var(--text); }
+    .stat-block .label { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); }
+
+    table { border-collapse: collapse; width: 100%; }
+    th, td { padding: 8px 12px; border-bottom: 1px solid var(--border); text-align: left; font-size: 13px; }
+    th { color: var(--muted); text-transform: uppercase; letter-spacing: 1px; font-size: 11px; font-weight: 600; }
+
+    button, input[type=submit] {
+      background: var(--card-hover);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px 14px;
+      font: inherit;
+      cursor: pointer;
+    }
+    button:hover, input[type=submit]:hover { background: var(--accent); color: #2a1f00; border-color: var(--accent); }
+    button.primary { background: var(--accent); color: #2a1f00; border-color: var(--accent); font-weight: 600; }
+
+    textarea, input[type=text] {
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px 10px;
+      font: inherit;
+      width: 100%;
+    }
+    textarea:focus, input[type=text]:focus { outline: none; border-color: var(--accent); }
+
+    .muted { color: var(--muted); }
+    .mono { font-family: ui-monospace, Menlo, monospace; }
+
+    pre.log {
+      background: #0a0c10;
+      border: 1px solid var(--border);
+      padding: 12px;
+      border-radius: 6px;
+      overflow-x: auto;
+      font-size: 12px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .phase-header {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin: 20px 0 8px;
+    }
+    .phase-header .badge {
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+  <header class="topnav">
+    <div class="brand">learning-plan<small>math-academy tracker</small></div>
+    <nav>
+      <a href="/" class="{{if eq .ActiveNav "dashboard"}}active{{end}}">dashboard</a>
+      <a href="/graph" class="{{if eq .ActiveNav "graph"}}active{{end}}">prereq graph</a>
+      <a href="/review" class="{{if eq .ActiveNav "review"}}active{{end}}">review queue</a>
+      <a href="/drill" class="{{if eq .ActiveNav "drill"}}active{{end}}">drills</a>
+    </nav>
+    <div class="right">Go + stdlib only · {{len .Curriculum.Tasks}} tasks · {{len .Curriculum.Drills}} drills</div>
+  </header>
+  <main>
+    {{template "content" .}}
+  </main>
+</body>
+</html>
+{{end}}
