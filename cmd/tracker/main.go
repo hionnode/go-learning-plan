@@ -56,6 +56,10 @@ func main() {
 		if err := runPlace(ctx, args); err != nil {
 			die("place: %v", err)
 		}
+	case "validate":
+		if err := runValidate(ctx, args); err != nil {
+			die("validate: %v", err)
+		}
 	case "-h", "--help", "help":
 		usage()
 	default:
@@ -74,6 +78,8 @@ Usage:
   tracker drill  <drill-id>       run a timed drill
   tracker review                  list tasks due for review today
   tracker place  <phase-id>       run a phase diagnostic (phase-1, phase-2, …)
+  tracker validate [path]         parse + DAG-check a curriculum / skill-tree
+                                  file (defaults to curriculum-v2.md)
 
 Examples:
   go run ./cmd/tracker serve
@@ -81,6 +87,7 @@ Examples:
   go run ./cmd/tracker drill stdin-echo
   go run ./cmd/tracker review
   go run ./cmd/tracker place phase-1
+  go run ./cmd/tracker validate explorations/netbird-skill-tree.md
 `)
 }
 
