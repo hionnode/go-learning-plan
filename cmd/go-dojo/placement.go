@@ -85,7 +85,7 @@ type placementQuiz struct {
 
 func runPlacement(ctx *appContext, args []string) error {
 	if len(args) < 1 {
-		return fmt.Errorf("usage: go-learn placement <phase-id>  (e.g. phase-0)")
+		return fmt.Errorf("usage: go-dojo placement <phase-id>  (e.g. phase-0)")
 	}
 	phaseID := args[0]
 	quiz, ok := placementQuizzes[phaseID]

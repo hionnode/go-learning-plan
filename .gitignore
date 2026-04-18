@@ -1,8 +1,8 @@
-# Tracker user state — local, regenerated on first run.
+# Local user state — regenerated on first run.
 progress.json
 
-# Build artifacts
-/go-learn
+# Build artifact
+/go-dojo
 
 # Generated per-machine shell aliases (absolute paths inside)
 /aliases.sh

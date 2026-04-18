@@ -47,7 +47,7 @@ git clone --depth=1 <URL> /tmp/<repo>
 
 **4. Validate.**
 ```sh
-go-learn validate explorations/<repo>-skill-tree.md
+go-dojo validate explorations/<repo>-skill-tree.md
 ```
 This parses the frontmatter, builds the DAG, topo-sorts it (rejects cycles), and reports any dangling `drill_ids` / `remediation` / `interleave_with` refs. Fix problems until it prints `no dangling references`.
 
@@ -109,7 +109,7 @@ drills:
 Before committing, run through these:
 
 **Structure (mechanical):**
-- [ ] `go-learn validate` prints `no dangling references`
+- [ ] `go-dojo validate` prints `no dangling references`
 - [ ] Every node has YAML frontmatter; every frontmatter has all 10 fields
 - [ ] Every `drill_id` on a task resolves in the drill library
 - [ ] DAG has no cycles (validator enforces, but sanity-check the prereqs read right)

@@ -2,7 +2,7 @@
 
 A ~26-week self-paced curriculum to take you from **JS/Python working knowledge + zero backend experience** to independently solving all six [Fly.io Gossip Glomers](https://fly.io/dist-sys/) distributed-systems challenges in Go.
 
-It ships with `go-learn`, a local CLI + web dashboard (Go, stdlib-only) that enforces **Math-Academy-Way** learning: mastery levels instead of checkboxes, spaced retrieval, prerequisite DAG, timed drills for automaticity, phase-entry placement quizzes.
+It ships with `go-dojo`, a local CLI + web dashboard (Go, stdlib-only) that enforces **Math-Academy-Way** learning: mastery levels instead of checkboxes, spaced retrieval, prerequisite DAG, timed drills for automaticity, phase-entry placement quizzes.
 
 ## Who this is for
 
@@ -18,30 +18,30 @@ You want to build real backends and understand distributed systems. You're willi
 ## Quick start
 
 ```sh
-./setup.sh                             # check go, build ./go-learn, generate aliases.sh
-source ./aliases.sh                    # enables the 'go-learn' shell function
-go-learn serve                         # dashboard on http://localhost:8080
-go-learn placement phase-0             # diagnostic quiz — skip what you already know
-go-learn verify 1.1-hello-world        # run the first exercise's tests
+./setup.sh                             # check go, build ./go-dojo, generate aliases.sh
+source ./aliases.sh                    # enables the 'go-dojo' shell function
+go-dojo serve                         # dashboard on http://localhost:8080
+go-dojo placement phase-0             # diagnostic quiz — skip what you already know
+go-dojo verify 1.1-hello-world        # run the first exercise's tests
 ```
 
-To make `go-learn` available in every new shell, add to `~/.zshrc` (or `~/.bashrc`):
+To make `go-dojo` available in every new shell, add to `~/.zshrc` (or `~/.bashrc`):
 
 ```sh
 source /path/to/learning-plan/aliases.sh
 ```
 
-Open `exercises/phase-1/1.1-hello-world/` — fill in `echo.go`, re-run `go-learn verify`. When it goes green, your mastery on `1.1-hello-world` becomes `learning` and a review is scheduled 3 days out.
+Open `exercises/phase-1/1.1-hello-world/` — fill in `echo.go`, re-run `go-dojo verify`. When it goes green, your mastery on `1.1-hello-world` becomes `learning` and a review is scheduled 3 days out.
 
-> Without the function sourced, every command still works in long form: `go run ./cmd/go-learn serve` or `./go-learn serve` after `./setup.sh`.
+> Without the function sourced, every command still works in long form: `go run ./cmd/go-dojo serve` or `./go-dojo serve` after `./setup.sh`.
 
-## How `go-learn` works
+## How `go-dojo` works
 
 - **Four mastery levels** per task: `unseen → learning → proficient → automatic`. You advance only when the task's `verify_test.go` passes — no self-report.
 - **Spaced retrieval** at `[3, 7, 21, 60]` days. Missing a review demotes mastery — retention is the whole point.
-- **Prereq DAG.** Every task declares its prerequisites; `go-learn` refuses to surface a task whose prereqs aren't at least `learning`. Failed verifies route you to the remediation target.
+- **Prereq DAG.** Every task declares its prerequisites; `go-dojo` refuses to surface a task whose prereqs aren't at least `learning`. Failed verifies route you to the remediation target.
 - **Drills** are short, timed deliberate-practice exercises (e.g. "write a net/http handler in <10 min"). Beating target time promotes the parent task to `automatic`.
-- **Diagnostic placement** at phase entry lets you skip what you already own: `go-learn placement phase-0`.
+- **Diagnostic placement** at phase entry lets you skip what you already own: `go-dojo placement phase-0`.
 
 ## Curriculum at a glance
 
@@ -68,7 +68,7 @@ Each technology in Phase 3 gets a **concepts-first** task (raw psql, raw redis-c
 ├── implementation-plan.md    # v1 (frozen, historical)
 ├── improvements-summary.md   # why v2 changed vs v1
 ├── go.mod
-├── cmd/go-learn/             # the CLI binary (serve/verify/drill/review/placement/validate)
+├── cmd/go-dojo/             # the CLI binary (serve/verify/drill/review/placement/validate)
 ├── internal/                 # parser, progress store, SRS, DAG, drill runner
 ├── exercises/                # your scaffolds
 │   └── phase-1/
@@ -83,18 +83,18 @@ More exercise scaffolds are added lazily as you reach them.
 
 ## CLI reference
 
-With the `go-learn` function sourced (see Quick start):
+With the `go-dojo` function sourced (see Quick start):
 
 ```sh
-go-learn serve                   # dashboard, graph, review queue, drills
-go-learn verify    <task-id>     # run that task's tests, update mastery
-go-learn drill     <drill-id>    # timed deliberate-practice exercise
-go-learn review                  # what's due for retrieval today
-go-learn placement <phase-id>    # diagnostic quiz (phase-0 … phase-4)
-go-learn validate  [path]        # lint a curriculum / skill-tree file
+go-dojo serve                   # dashboard, graph, review queue, drills
+go-dojo verify    <task-id>     # run that task's tests, update mastery
+go-dojo drill     <drill-id>    # timed deliberate-practice exercise
+go-dojo review                  # what's due for retrieval today
+go-dojo placement <phase-id>    # diagnostic quiz (phase-0 … phase-4)
+go-dojo validate  [path]        # lint a curriculum / skill-tree file
 ```
 
-Long forms (no function needed): `go run ./cmd/go-learn <subcommand>` or `./go-learn <subcommand>` after `./setup.sh`.
+Long forms (no function needed): `go run ./cmd/go-dojo <subcommand>` or `./go-dojo <subcommand>` after `./setup.sh`.
 
 Progress lives in `progress.json` (gitignored — your state, not repo state).
 

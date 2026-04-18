@@ -5,7 +5,7 @@ Write a program that reads stdin line-by-line and echoes each line to stdout. Ha
 ## Files
 
 - `echo.go` — you edit this. Implement `Echo(r io.Reader, w io.Writer) error`.
-- `echo_test.go` — the verify harness. **Do not edit** — `go-learn verify 1.1-hello-world` runs these.
+- `echo_test.go` — the verify harness. **Do not edit** — `go-dojo verify 1.1-hello-world` runs these.
 
 You can smoke-test manually: write a tiny `cmd/echo/main.go` under this dir that calls `Echo(os.Stdin, os.Stdout)`, then `echo -e "a\nb" | go run ./cmd/echo`. But the test is the source of truth.
 
@@ -19,7 +19,7 @@ This exercise looks trivial. It isn't. The Maelstrom protocol in Phase 5 is lite
 
 ## Mastery criteria
 
-- `go-learn verify 1.1-hello-world` passes
+- `go-dojo verify 1.1-hello-world` passes
 - You can reproduce this from scratch, blank editor, in under 5 min
 - You can explain the difference between `bufio.NewReader` and `bufio.NewScanner`
 

@@ -53,7 +53,12 @@ func runServe(ctx *appContext, args []string) error {
 
 	errCh := make(chan error, 1)
 	go func() {
-		fmt.Printf("go-learn listening on http://localhost%s\n", addr)
+		fmt.Print(banner)
+		fmt.Printf("  dashboard  http://localhost%s\n", addr)
+		fmt.Printf("  graph      http://localhost%s/graph\n", addr)
+		fmt.Printf("  review     http://localhost%s/review\n", addr)
+		fmt.Println("  (Ctrl-C to stop)")
+		fmt.Println()
 		if err := httpSrv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			errCh <- err
 		}
