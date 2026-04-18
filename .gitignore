@@ -4,6 +4,9 @@ progress.json
 # Build artifacts
 /tracker
 
+# Generated per-machine shell aliases (absolute paths inside)
+/aliases.sh
+
 # Editor noise
 .vscode/
 .idea/

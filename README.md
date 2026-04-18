@@ -18,12 +18,22 @@ You want to build real backends and understand distributed systems. You're willi
 ## Quick start
 
 ```sh
-./setup.sh                                      # check go, compile tracker, smoke-test
-go run ./cmd/tracker serve                      # dashboard on http://localhost:8080
-go run ./cmd/tracker verify 1.1-hello-world     # run the first exercise's tests
+./setup.sh                          # check go, build ./tracker, generate aliases.sh
+source ./aliases.sh                 # enables 'lp' shell function (once per shell)
+lp serve                            # dashboard on http://localhost:8080
+lp place phase-0                    # diagnostic quiz — skip what you already know
+lp verify 1.1-hello-world           # run the first exercise's tests
 ```
 
-Open `exercises/phase-1/1.1-hello-world/` — fill in `echo.go`, re-run the verify. When it goes green, your mastery on `1.1-hello-world` becomes `learning` and a review is scheduled 3 days out.
+To make `lp` available in every new shell, add to `~/.zshrc` (or `~/.bashrc`):
+
+```sh
+source /path/to/learning-plan/aliases.sh
+```
+
+Open `exercises/phase-1/1.1-hello-world/` — fill in `echo.go`, re-run `lp verify`. When it goes green, your mastery on `1.1-hello-world` becomes `learning` and a review is scheduled 3 days out.
+
+> Without the alias sourced, every command still works in long form: `go run ./cmd/tracker serve`, `./tracker serve`, etc. The `lp` function just makes it shorter. It shadows the macOS/Linux printer command — use `command lp` if you need the printer.
 
 ## How the tracker works
 
@@ -73,14 +83,18 @@ More exercise scaffolds are added lazily as you reach them.
 
 ## Tracker CLI
 
+With the `lp` function sourced (see Quick start):
+
 ```sh
-go run ./cmd/tracker serve                # dashboard, graph, review queue, drills
-go run ./cmd/tracker verify   <task-id>   # run that task's tests, update mastery
-go run ./cmd/tracker drill    <drill-id>  # timed deliberate-practice exercise
-go run ./cmd/tracker review               # what's due for retrieval today
-go run ./cmd/tracker place    <phase-id>  # diagnostic quiz (phase-0 … phase-4)
-go run ./cmd/tracker validate [path]      # lint a curriculum / skill-tree file
+lp serve                # dashboard, graph, review queue, drills
+lp verify   <task-id>   # run that task's tests, update mastery
+lp drill    <drill-id>  # timed deliberate-practice exercise
+lp review               # what's due for retrieval today
+lp place    <phase-id>  # diagnostic quiz (phase-0 … phase-4)
+lp validate [path]      # lint a curriculum / skill-tree file
 ```
+
+Long forms (no alias needed): `go run ./cmd/tracker <subcommand>` or `./tracker <subcommand>` after `./setup.sh`.
 
 Progress lives in `progress.json` (gitignored — your state, not repo state).
 
