@@ -58,12 +58,15 @@ Each technology in Phase 3 gets a **concepts-first** task (raw psql, raw redis-c
 ├── implementation-plan.md    # v1 (frozen, historical)
 ├── improvements-summary.md   # why v2 changed vs v1
 ├── go.mod
-├── cmd/tracker/              # the tracker binary (serve/verify/drill/review/place)
+├── cmd/tracker/              # the tracker binary (serve/verify/drill/review/place/validate)
 ├── internal/                 # parser, progress store, SRS, DAG, drill runner
-└── exercises/
-    └── phase-1/
-        ├── 1.1-hello-world/        # seeded scaffold + verify_test.go
-        └── 1.2-types-structs/      # seeded scaffold + verify_test.go
+├── exercises/                # your scaffolds
+│   └── phase-1/
+│       ├── 1.1-hello-world/        # seeded scaffold + verify_test.go
+│       └── 1.2-types-structs/      # seeded scaffold + verify_test.go
+└── explorations/             # skill trees for third-party repos
+    ├── README.md                   # how to add one for a new repo
+    └── netbird-skill-tree.md       # beginner's map of netbirdio/netbird
 ```
 
 More exercise scaffolds are added lazily as you reach them.
@@ -72,13 +75,18 @@ More exercise scaffolds are added lazily as you reach them.
 
 ```sh
 go run ./cmd/tracker serve                # dashboard, graph, review queue, drills
-go run ./cmd/tracker verify <task-id>     # run that task's tests, update mastery
-go run ./cmd/tracker drill  <drill-id>    # timed deliberate-practice exercise
+go run ./cmd/tracker verify   <task-id>   # run that task's tests, update mastery
+go run ./cmd/tracker drill    <drill-id>  # timed deliberate-practice exercise
 go run ./cmd/tracker review               # what's due for retrieval today
-go run ./cmd/tracker place  <phase-id>    # diagnostic quiz (phase-0 … phase-4)
+go run ./cmd/tracker place    <phase-id>  # diagnostic quiz (phase-0 … phase-4)
+go run ./cmd/tracker validate [path]      # lint a curriculum / skill-tree file
 ```
 
 Progress lives in `progress.json` (gitignored — your state, not repo state).
+
+## Explorations
+
+`explorations/` holds skill trees for **third-party** codebases — beginner prerequisite maps for understanding how a repo works. Unlike the main curriculum, these aren't tracker-driven (no tests we control); they're reading orders you self-assess against. See [`explorations/README.md`](explorations/README.md) for the five-step framework to add one for a new repo.
 
 ## Where to read next
 
