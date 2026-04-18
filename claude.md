@@ -40,6 +40,7 @@ Reach for these when introducing Go concepts — they're the learner's native me
 - **When learner says "next":** Move to the next task in the curriculum. Summarize what they should know before starting.
 - **When learner says "challenge":** Give a small stretch exercise related to the current phase. Something that takes 30–60 min.
 - **When the learner asks "what even is X?" about a backend concept** (HTTP, SQL, cache, queue, TCP, etc.): give the plain-language intro first. No Go code in the first response.
+- **When the learner asks to understand a third-party codebase** ("help me read X", "how does netbird work", URL in hand): run the explorations framework (see "Working with third-party codebases" below), don't improvise a tour.
 
 ### Code Standards To Enforce
 
@@ -78,20 +79,25 @@ Every task in the curriculum ships with a `verify_test.go`. The tracker's `verif
 
 ```
 learning-plan/
-├── claude.md                  # this file
-├── curriculum-v2.md           # active curriculum
+├── README.md                  # front-door for new readers
+├── setup.sh                   # one-shot env check + first build
+├── claude.md                  # this file — mentor rules
+├── curriculum-v2.md           # active curriculum (43 tasks)
 ├── implementation-plan.md     # v1, frozen
-├── improvements-summary.md    # what changed and why
+├── improvements-summary.md    # why v2 diverges from v1
 ├── progress.json              # tracker state (gitignored)
-├── cmd/tracker/               # the tracker binary
-├── internal/                  # tracker internals
-└── exercises/
-    ├── phase-0/               # onramp (backend mental model + Go essentials)
-    ├── phase-1/               # Go fundamentals
-    ├── phase-2/               # HTTP & stdlib
-    ├── phase-3/               # backend building blocks
-    ├── phase-4/               # distsys theory + practice
-    └── phase-5/               # Gossip Glomers
+├── cmd/tracker/               # tracker binary — serve/verify/drill/review/place/validate
+├── internal/                  # tracker internals — parser, store, SRS, DAG, drills
+├── exercises/                 # learner's own work, scaffolded per task
+│   ├── phase-0/               # onramp (backend mental model + Go essentials)
+│   ├── phase-1/               # Go fundamentals
+│   ├── phase-2/               # HTTP & stdlib
+│   ├── phase-3/               # backend building blocks
+│   ├── phase-4/               # distsys theory + practice
+│   └── phase-5/               # Gossip Glomers
+└── explorations/              # skill trees for THIRD-PARTY codebases
+    ├── README.md              # the five-step framework for adding one
+    └── <repo>-skill-tree.md   # one file per repo studied
 ```
 
 ### Progress Tracking
@@ -103,6 +109,21 @@ The tracker owns progress in `progress.json`. After each task verify, prompt the
 - Use `go run`, `go test`, `go build` directly — no Makefiles until Phase 3.
 - Use `dlv` (Delve debugger) when debugging concurrency issues.
 - For Gossip Glomers: Maelstrom is a Java binary, needs JDK. Help with setup but don't over-automate it.
+- Use `go run ./cmd/tracker validate [path]` whenever a curriculum or skill-tree file is edited — it catches DAG cycles and dangling drill/remediation refs that silently break the tracker otherwise.
+
+### Working with third-party codebases (the explorations framework)
+
+When the learner says things like *"help me understand X"*, *"how does [open-source repo] work"*, *"I want to read a real Go codebase"*, or brings a repo URL asking what's inside — **don't improvise a tour**. Point at `explorations/README.md` and run the five-step framework:
+
+1. `npx skills add petekp/agent-skills@codebase-study-guide -g -y` (once per machine).
+2. `git clone --depth=1 <URL> /tmp/<repo>`.
+3. Launch **one** `Explore` subagent (thoroughness: very thorough) with the standardized prompt: one-paragraph purpose, top-level directory map, entry points, 2–3 end-to-end flows traced file-by-file, 3–5 threshold concepts, external protocols/deps, testing strategy, ~10–15-node learning order.
+4. Draft `explorations/<repo>-skill-tree.md` in the required 9-section structure with YAML frontmatter per node (10 fields each) and a drill library.
+5. `go run ./cmd/tracker validate explorations/<repo>-skill-tree.md` — fix until it prints `no dangling references`. Clean up `/tmp/<repo>`. Commit.
+
+This is deliberately heavyweight. The framework exists because ad-hoc "let me walk you through this codebase" tours leak concepts the learner can't anchor. A skill tree with threshold concepts, explicit prereqs, and timed drills gives them something to climb *and* retain.
+
+**When NOT to use it:** a 5-minute "what does this file do?" question; reviewing the learner's own code; anything on the main curriculum.
 
 ### Agentic Coding Meta-Skill
 
