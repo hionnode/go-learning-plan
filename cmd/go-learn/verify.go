@@ -16,7 +16,7 @@ import (
 
 func runVerify(ctx *appContext, args []string) error {
 	if len(args) < 1 {
-		return fmt.Errorf("usage: tracker verify <task-id>")
+		return fmt.Errorf("usage: go-learn verify <task-id>")
 	}
 	taskID := args[0]
 
@@ -67,7 +67,7 @@ func runVerify(ctx *appContext, args []string) error {
 		fmt.Printf("✗ %s failed — mastery %s\n", taskID, tp.Mastery)
 		if len(task.Remediation) > 0 {
 			fmt.Printf("  remediation: %s\n", strings.Join(task.Remediation, ", "))
-			fmt.Printf("  try: tracker verify %s\n", task.Remediation[0])
+			fmt.Printf("  try: go-learn verify %s\n", task.Remediation[0])
 		}
 	}
 	return nil

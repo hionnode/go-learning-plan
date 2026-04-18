@@ -83,9 +83,9 @@ type placementQuiz struct {
 	coverage []string // tasks to mark skipped if score >= passPct
 }
 
-func runPlace(ctx *appContext, args []string) error {
+func runPlacement(ctx *appContext, args []string) error {
 	if len(args) < 1 {
-		return fmt.Errorf("usage: tracker place <phase-id>  (e.g. phase-1)")
+		return fmt.Errorf("usage: go-learn placement <phase-id>  (e.g. phase-0)")
 	}
 	phaseID := args[0]
 	quiz, ok := placementQuizzes[phaseID]

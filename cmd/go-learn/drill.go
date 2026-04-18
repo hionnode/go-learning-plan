@@ -12,7 +12,7 @@ import (
 
 func runDrill(ctx *appContext, args []string) error {
 	if len(args) < 1 {
-		return fmt.Errorf("usage: tracker drill <drill-id>")
+		return fmt.Errorf("usage: go-learn drill <drill-id>")
 	}
 	id := args[0]
 

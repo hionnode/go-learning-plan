@@ -1,11 +1,12 @@
-// tracker is the learning-plan CLI + local web dashboard.
+// go-learn is the learning-plan CLI + local web dashboard.
 //
 // Subcommands:
-//   serve   — run HTTP server on :8080
-//   verify  — run a task's go-test suite, update mastery
-//   drill   — run a timed deliberate-practice drill
-//   review  — print today's spaced-retrieval queue
-//   place   — run a phase diagnostic placement quiz
+//   serve      — run HTTP server on :8080
+//   verify     — run a task's go-test suite, update mastery
+//   drill      — run a timed deliberate-practice drill
+//   review     — print today's spaced-retrieval queue
+//   placement  — run a phase diagnostic placement quiz
+//   validate   — lint a curriculum or skill-tree file
 //
 // All state lives in progress.json at the repo root; the curriculum is loaded
 // from curriculum-v2.md. No external dependencies — stdlib only.
@@ -52,9 +53,9 @@ func main() {
 		if err := runReview(ctx, args); err != nil {
 			die("review: %v", err)
 		}
-	case "place":
-		if err := runPlace(ctx, args); err != nil {
-			die("place: %v", err)
+	case "placement":
+		if err := runPlacement(ctx, args); err != nil {
+			die("placement: %v", err)
 		}
 	case "validate":
 		if err := runValidate(ctx, args); err != nil {
@@ -70,29 +71,29 @@ func main() {
 }
 
 func usage() {
-	fmt.Fprintf(os.Stderr, `tracker — learning-plan Math-Academy-Way tracker
+	fmt.Fprintf(os.Stderr, `go-learn — learning-plan Math-Academy-Way tracker
 
 Usage:
-  tracker serve                   start dashboard on http://localhost:8080
-  tracker verify <task-id>        run the task's verify tests, update mastery
-  tracker drill  <drill-id>       run a timed drill
-  tracker review                  list tasks due for review today
-  tracker place  <phase-id>       run a phase diagnostic (phase-1, phase-2, …)
-  tracker validate [path]         parse + DAG-check a curriculum / skill-tree
-                                  file (defaults to curriculum-v2.md)
+  go-learn serve                   start dashboard on http://localhost:8080
+  go-learn verify <task-id>        run the task's verify tests, update mastery
+  go-learn drill  <drill-id>       run a timed drill
+  go-learn review                  list tasks due for review today
+  go-learn placement <phase-id>    run a phase diagnostic (phase-0 … phase-4)
+  go-learn validate [path]         parse + DAG-check a curriculum / skill-tree
+                                   file (defaults to curriculum-v2.md)
 
 Examples:
-  go run ./cmd/tracker serve
-  go run ./cmd/tracker verify 1.1-hello-world
-  go run ./cmd/tracker drill stdin-echo
-  go run ./cmd/tracker review
-  go run ./cmd/tracker place phase-1
-  go run ./cmd/tracker validate explorations/netbird-skill-tree.md
+  go run ./cmd/go-learn serve
+  go run ./cmd/go-learn verify 1.1-hello-world
+  go run ./cmd/go-learn drill stdin-echo
+  go run ./cmd/go-learn review
+  go run ./cmd/go-learn placement phase-0
+  go run ./cmd/go-learn validate explorations/netbird-skill-tree.md
 `)
 }
 
 func die(format string, args ...any) {
-	fmt.Fprintf(os.Stderr, "tracker: "+format+"\n", args...)
+	fmt.Fprintf(os.Stderr, "go-learn: "+format+"\n", args...)
 	os.Exit(1)
 }
 

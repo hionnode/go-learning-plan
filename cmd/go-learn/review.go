@@ -34,7 +34,7 @@ func runReview(ctx *appContext, args []string) error {
 		fmt.Printf("  %-30s  %-12s  %s overdue  — %s\n",
 			id, tp.Mastery, roundDuration(late), title)
 	}
-	fmt.Println("\nrun: tracker verify <task-id>   for each — retrieval, not re-reading.")
+	fmt.Println("\nrun: go-learn verify <task-id>   for each — retrieval, not re-reading.")
 	return nil
 }
 

@@ -2,7 +2,7 @@
 progress.json
 
 # Build artifacts
-/tracker
+/go-learn
 
 # Generated per-machine shell aliases (absolute paths inside)
 /aliases.sh

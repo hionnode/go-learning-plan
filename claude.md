@@ -59,7 +59,7 @@ The learner is building two fluencies in parallel — Go, and backend engineerin
 2. Write the minimum code to pass.
 3. Refactor with the test as safety net.
 
-Every task in the curriculum ships with a `verify_test.go`. The tracker's `verify` command *is* the grade — "done" means the test passes, not that the learner says so. This reinforces:
+Every task in the curriculum ships with a `verify_test.go`. The `go-learn verify` command *is* the grade — "done" means the test passes, not that the learner says so. This reinforces:
 
 - backend is knowable via behavior (tests describe behavior)
 - you don't need to hold the whole system in your head (the test remembers)
@@ -85,9 +85,9 @@ learning-plan/
 ├── curriculum-v2.md           # active curriculum (43 tasks)
 ├── implementation-plan.md     # v1, frozen
 ├── improvements-summary.md    # why v2 diverges from v1
-├── progress.json              # tracker state (gitignored)
-├── cmd/tracker/               # tracker binary — serve/verify/drill/review/place/validate
-├── internal/                  # tracker internals — parser, store, SRS, DAG, drills
+├── progress.json              # go-learn state (gitignored)
+├── cmd/go-learn/              # CLI binary — serve/verify/drill/review/placement/validate
+├── internal/                  # CLI internals — parser, store, SRS, DAG, drills
 ├── exercises/                 # learner's own work, scaffolded per task
 │   ├── phase-0/               # onramp (backend mental model + Go essentials)
 │   ├── phase-1/               # Go fundamentals
@@ -102,14 +102,14 @@ learning-plan/
 
 ### Progress Tracking
 
-The tracker owns progress in `progress.json`. After each task verify, prompt the learner to log a reflection via `tracker serve` → task page, or the CLI: what they built, what concept clicked, what's still fuzzy. The reflection is retrieval practice — it's what gets surfaced on the next spaced-review.
+`go-learn` owns progress in `progress.json`. After each task verify, prompt the learner to log a reflection via `go-learn serve` → task page, or the CLI: what they built, what concept clicked, what's still fuzzy. The reflection is retrieval practice — it's what gets surfaced on the next spaced-review.
 
 ### Tool Usage
 
 - Use `go run`, `go test`, `go build` directly — no Makefiles until Phase 3.
 - Use `dlv` (Delve debugger) when debugging concurrency issues.
 - For Gossip Glomers: Maelstrom is a Java binary, needs JDK. Help with setup but don't over-automate it.
-- Use `go run ./cmd/tracker validate [path]` whenever a curriculum or skill-tree file is edited — it catches DAG cycles and dangling drill/remediation refs that silently break the tracker otherwise.
+- Use `go-learn validate [path]` whenever a curriculum or skill-tree file is edited — it catches DAG cycles and dangling drill/remediation refs that silently break things otherwise.
 
 ### Working with third-party codebases (the explorations framework)
 
@@ -119,7 +119,7 @@ When the learner says things like *"help me understand X"*, *"how does [open-sou
 2. `git clone --depth=1 <URL> /tmp/<repo>`.
 3. Launch **one** `Explore` subagent (thoroughness: very thorough) with the standardized prompt: one-paragraph purpose, top-level directory map, entry points, 2–3 end-to-end flows traced file-by-file, 3–5 threshold concepts, external protocols/deps, testing strategy, ~10–15-node learning order.
 4. Draft `explorations/<repo>-skill-tree.md` in the required 9-section structure with YAML frontmatter per node (10 fields each) and a drill library.
-5. `go run ./cmd/tracker validate explorations/<repo>-skill-tree.md` — fix until it prints `no dangling references`. Clean up `/tmp/<repo>`. Commit.
+5. `go-learn validate explorations/<repo>-skill-tree.md` — fix until it prints `no dangling references`. Clean up `/tmp/<repo>`. Commit.
 
 This is deliberately heavyweight. The framework exists because ad-hoc "let me walk you through this codebase" tours leak concepts the learner can't anchor. A skill tree with threshold concepts, explicit prereqs, and timed drills gives them something to climb *and* retain.
 

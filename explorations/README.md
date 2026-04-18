@@ -7,7 +7,7 @@ Each file layers two frameworks:
 - **[Math-Academy-Way](../curriculum-v2.md):** 4-level mastery, explicit prereqs, spaced retrieval intervals, timed drills for automaticity.
 - **[`codebase-study-guide` skill](https://skills.sh/petekp/agent-skills/codebase-study-guide):** purpose-before-structure, 3 threshold concepts front-loaded, Mermaid system map, PRIMM (Predict-Run-Investigate-Modify) active-learning prompts.
 
-Unlike `curriculum-v2.md`, these are **not** tracker-driven — there's no `verify_test.go` we control in a third-party repo. Treat them as reading orders you self-assess against.
+Unlike `curriculum-v2.md`, these are **not** verify-driven — there's no `verify_test.go` we control in a third-party repo. Treat them as reading orders you self-assess against.
 
 ## Existing trees
 
@@ -47,7 +47,7 @@ git clone --depth=1 <URL> /tmp/<repo>
 
 **4. Validate.**
 ```sh
-go run ./cmd/tracker validate explorations/<repo>-skill-tree.md
+go-learn validate explorations/<repo>-skill-tree.md
 ```
 This parses the frontmatter, builds the DAG, topo-sorts it (rejects cycles), and reports any dangling `drill_ids` / `remediation` / `interleave_with` refs. Fix problems until it prints `no dangling references`.
 
@@ -109,7 +109,7 @@ drills:
 Before committing, run through these:
 
 **Structure (mechanical):**
-- [ ] `tracker validate` prints `no dangling references`
+- [ ] `go-learn validate` prints `no dangling references`
 - [ ] Every node has YAML frontmatter; every frontmatter has all 10 fields
 - [ ] Every `drill_id` on a task resolves in the drill library
 - [ ] DAG has no cycles (validator enforces, but sanity-check the prereqs read right)

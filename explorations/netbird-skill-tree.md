@@ -4,7 +4,7 @@
 >
 > **Who it's for.** You can read Go, but you're new to networking, VPNs, WireGuard, and zero-trust. You want to understand *how NetBird actually works*, not just use it.
 >
-> **Fun-experiment status.** This file is an exploration — it's not wired into the tracker's `verify` system (NetBird is a third-party codebase; there are no per-task tests we control). The frontmatter matches `curriculum-v2.md`'s shape so the tracker *could* parse it if we ever want to, but for now treat it as a reading order with mastery gates you self-assess against.
+> **Fun-experiment status.** This file is an exploration — it's not wired into the `go-learn verify` system (NetBird is a third-party codebase; there are no per-task tests we control). The frontmatter matches `curriculum-v2.md`'s shape so `go-learn` *could* parse it if we ever want to, but for now treat it as a reading order with mastery gates you self-assess against.
 
 ---
 

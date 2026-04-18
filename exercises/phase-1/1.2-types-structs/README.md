@@ -5,7 +5,7 @@ You are building the same pattern every Maelstrom node in Phase 5 uses: parse an
 ## Files
 
 - `dispatcher.go` — you edit this. Fill in JSON tags, handler bodies, and `Dispatch`.
-- `dispatcher_test.go` — the verify harness. **Do not edit** — `tracker verify 1.2-types-structs` runs these.
+- `dispatcher_test.go` — the verify harness. **Do not edit** — `go-learn verify 1.2-types-structs` runs these.
 
 ## What to build
 
@@ -35,6 +35,6 @@ Go interfaces are satisfied *implicitly*. You do not write `EchoHandler implemen
 
 ## Mastery criteria
 
-- `tracker verify 1.2-types-structs` passes
+- `go-learn verify 1.2-types-structs` passes
 - You can explain why the JSON tags matter (hint: what happens if you forget them)
 - You can add a new handler with zero changes to `Dispatcher`

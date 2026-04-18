@@ -4,7 +4,7 @@
 >
 > **Who it's for.** A learner who can write JavaScript and/or Python at a working level but has **no prior backend experience** — never built a server, never written raw SQL, never touched a cache or message queue, new to compiled + statically typed languages. The course takes you from there to passing all 6 Fly.io Gossip Glomers challenges. ~26–30 weeks at 2–3 hrs/day.
 >
-> **How to read it.** Each task carries a machine-readable YAML frontmatter block the tracker parses. The prose underneath is for humans. "Mastery criteria" replaces checkbox-doneness: you progress by passing the test the tracker runs, then re-passing it after a spaced-retrieval interval. TDD is the default workflow throughout — the `verify_test.go` is the source of truth, not your opinion of whether you're done.
+> **How to read it.** Each task carries a machine-readable YAML frontmatter block `go-learn` parses. The prose underneath is for humans. "Mastery criteria" replaces checkbox-doneness: you progress by passing the test `go-learn verify` runs, then re-passing it after a spaced-retrieval interval. TDD is the default workflow throughout — the `verify_test.go` is the source of truth, not your opinion of whether you're done.
 
 ---
 
@@ -15,7 +15,7 @@ Four levels per task, identical across the curriculum:
 | Level | Meaning | How you get here |
 |---|---|---|
 | `unseen` | Not started | default |
-| `learning` | Verify test passes at least once | `tracker verify <task-id>` returns green |
+| `learning` | Verify test passes at least once | `go-learn verify <task-id>` returns green |
 | `proficient` | Re-passed after ≥3 days without reopening your old solution | SRS review returns green |
 | `automatic` | Associated drills pass within their time target AND one full SRS cycle survived | drill + SRS both green |
 
@@ -25,7 +25,7 @@ SRS schedule defaults to `[3, 7, 21, 60]` days. A missed review bumps mastery do
 
 ## Diagnostic placement
 
-Before each phase, `tracker place phase-N` runs a short quiz/challenge. Passing lets you skip individual tasks within that phase. Don't grind through what you already own.
+Before each phase, `go-learn placement phase-<N>` runs a short quiz/challenge. Passing lets you skip individual tasks within that phase. Don't grind through what you already own.
 
 - `phase-0`: placement = explain HTTP request/response, what a port is, what DNS does, and draw the client/server diagram from memory. Short conceptual check.
 - `phase-1`: placement = write a stdin-echo + JSON-roundtrip + table-driven test in under 20 min, stdlib only.
@@ -134,7 +134,7 @@ diagnostic_checkpoint: false
 ---
 ```
 
-No Go code here. Read, watch, and draw. A "backend" in plain English is the machine (or fleet of machines) that answers requests from apps and browsers, stores state that outlives any one user, and coordinates work that shouldn't happen on the user's device. The rest of this curriculum is just "here's how to build one, one primitive at a time." If this feels trivial, `tracker place phase-0` and move on.
+No Go code here. Read, watch, and draw. A "backend" in plain English is the machine (or fleet of machines) that answers requests from apps and browsers, stores state that outlives any one user, and coordinates work that shouldn't happen on the user's device. The rest of this curriculum is just "here's how to build one, one primitive at a time." If this feels trivial, `go-learn placement phase-0` and move on.
 
 ```yaml
 ---
@@ -219,7 +219,7 @@ diagnostic_checkpoint: true
 
 First brush with HTTP as a *protocol*, not a library function. You're the client; something out there is the server. By the end of this task you should not be mystified by what curl prints.
 
-**Phase 0 exit:** `tracker place phase-1` must pass before entering Phase 1 proper.
+**Phase 0 exit:** `go-learn placement phase-1` must pass before entering Phase 1 proper.
 
 ---
 
@@ -350,7 +350,7 @@ lgwt_chapters: [property-based-tests, maths-svg-clock, reflection]
 ---
 ```
 
-**Phase 1 exit:** `tracker place phase-2` must pass.
+**Phase 1 exit:** `go-learn placement phase-2` must pass.
 
 ---
 
@@ -720,7 +720,7 @@ diagnostic_checkpoint: true
 
 ## Phase 5 — Gossip Glomers (~4–6 weeks)
 
-Maelstrom is the authority; the tracker's `verify` shells out to a Maelstrom run with the correct workload. Claude Code's role here is architecture-only — zero implementation help. If you reach for a solution, take the remediation pointer instead.
+Maelstrom is the authority; `go-learn verify` shells out to a Maelstrom run with the correct workload. Claude Code's role here is architecture-only — zero implementation help. If you reach for a solution, take the remediation pointer instead.
 
 ```yaml
 ---
@@ -941,7 +941,7 @@ diagnostic_checkpoint: false
 
 ## Spiral review schedule
 
-Spaced retrieval is the engine that moves a task from `learning` → `proficient` → `automatic`. The tracker re-queues review prompts at each interval in `review_intervals_days`. A missed review demotes mastery by one level — ignore the queue and you will feel it.
+Spaced retrieval is the engine that moves a task from `learning` → `proficient` → `automatic`. `go-learn` re-queues review prompts at each interval in `review_intervals_days`. A missed review demotes mastery by one level — ignore the queue and you will feel it.
 
 Every review is a *retrieval* (write from scratch, no peeking), not a re-read.
 
